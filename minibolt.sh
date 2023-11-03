@@ -42,6 +42,18 @@ color_orange='\033[38;5;208m'
 color_magenta='\033[0;35m'
 color_white='\033[37;3m'
 
+
+# git repo urls latest version 
+bitcoin_git_repo_url="https://api.github.com/repos/bitcoin/bitcoin/releases/latest" 
+electrs_git_repo_url="https://api.github.com/repos/romanz/electrs/releases/latest" 
+btcrpcexplorer_git_repo_url="https://api.github.com/repos/janoside/btc-rpc-explorer/releases/latest" 
+rtl_git_repo_url="https://api.github.com/repos/Ride-The-Lightning/RTL/releases/latest" 
+fulcrum_git_repo_url="https://api.github.com/repos/cculianu/Fulcrum/releases/latest" 
+thunderhub_git_repo_url="https://api.github.com/repos/apotdevin/thunderhub/releases/latest" 
+lnd_git_repo_url="https://api.github.com/repos/lightningnetwork/lnd/releases/latest" 
+cln_git_repo_url="https://api.github.com/repos/ElementsProject/lightning/releases/latest" 
+
+
 # controlled abort on Ctrl-C
 trap_ctrlC() {
   echo -e "\r"
@@ -81,7 +93,7 @@ ${color_blue}MiniBolt %s:${color_grey}  \033[1m"₿"\033[22mitcoin full node
 ${color_blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 " "v2"
 
-# Gather system data
+# Gather system data 
 # ------------------------------------------------------------------------------
 printf "%0.s#" {1..40}
 echo -ne '\r### Loading System data \r'
@@ -177,32 +189,34 @@ load_minibolt_versions() {
   thunderhubgit=$(cat ${gitstatusfile} | jq -r '.githubversions.thunderhub')
 }
 
+
+
 fetch_githubversion_bitcoin() {
-  btcgit=$(curl -s --connect-timeout 5 https://api.github.com/repos/bitcoin/bitcoin/releases/latest | jq -r '.tag_name | select(.!=null)')
+  btcgit=$(curl -s --connect-timeout 5 ${bitcoin_git_repo_url}  | jq -r '.tag_name | select(.!=null)')
 }
 fetch_githubversion_lightning() {
   ln_git_version=$(curl -s --connect-timeout 5 $ln_git_repo_url | jq -r '.tag_name | select(.!=null)')
 }
 fetch_githubversion_electrs() {
-  electrsgit=$(curl -s --connect-timeout 5 https://api.github.com/repos/romanz/electrs/releases/latest | jq -r '.tag_name | select(.!=null)')
+  electrsgit=$(curl -s --connect-timeout 5 ${electrs_git_repo_url} | jq -r '.tag_name | select(.!=null)')
 }
 fetch_githubversion_btcrpcexplorer() {
-  btcrpcexplorergit=$(curl -s --connect-timeout 5 https://api.github.com/repos/janoside/btc-rpc-explorer/releases/latest | jq -r '.tag_name | select(.!=null)')
+  btcrpcexplorergit=$(curl -s --connect-timeout 5 ${btcrpcexplorer_git_repo_url} | jq -r '.tag_name | select(.!=null)')
 }
 fetch_githubversion_rtl() {
-  rtlgit=$(curl -s --connect-timeout 5 https://api.github.com/repos/Ride-The-Lightning/RTL/releases/latest | jq -r '.tag_name | select(.!=null)')
+  rtlgit=$(curl -s --connect-timeout 5 ${rtl_git_repo_url} | jq -r '.tag_name | select(.!=null)')
 }
 fetch_githubversion_fulcrum() {
-  fulcrumgit=$(curl -s --connect-timeout 5 https://api.github.com/repos/cculianu/Fulcrum/releases/latest | jq -r '.tag_name | select(.!=null)')
+  fulcrumgit=$(curl -s --connect-timeout 5 ${fulcrum_git_repo_url} | jq -r '.tag_name | select(.!=null)')
 }
 fetch_githubversion_thunderhub() {
-  thunderhubgit=$(curl -s --connect-timeout 5 https://api.github.com/repos/apotdevin/thunderhub/releases/latest | jq -r '.tag_name | select(.!=null)')
+  thunderhubgit=$(curl -s --connect-timeout 5 ${thunderhub_git_repo_url} | jq -r '.tag_name | select(.!=null)')
 }
 fetch_githubversion_lnd() {
-  lndgit=$(curl -s --connect-timeout 5 https://api.github.com/repos/lightningnetwork/lnd/releases/latest | jq -r '.tag_name | select(.!=null)')
+  lndgit=$(curl -s --connect-timeout 5 ${lnd_git_repo_url} | jq -r '.tag_name | select(.!=null)')
 }
 fetch_githubversion_cln() {
-  clngit=$(curl -s --connect-timeout 5 https://api.github.com/repos/ElementsProject/lightning/releases/latest | jq -r '.tag_name | select(.!=null)')
+  clngit=$(curl -s --connect-timeout 5 ${cln_git_repo_url} | jq -r '.tag_name | select(.!=null)')
 }
 
 
