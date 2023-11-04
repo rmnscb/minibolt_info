@@ -9,12 +9,6 @@ echo -ne '\r### Loading LND data \r'
 # set datadir
 lnd_dir="/data/lnd"
 
-
-if [ "${chain}" = "test" ]; then
-  macaroon_path="${lnd_dir}/data/chain/bitcoin/testnet/readonly.macaroon"
-else
-  macaroon_path="${lnd_dir}/data/chain/bitcoin/mainnet/readonly.macaroon"
-fi
 lnd_running=$(systemctl is-active lnd 2>&1)
 lnd_color="${color_green}"
 if [ -z "${lnd_running##*inactive*}" ]; then
@@ -29,12 +23,13 @@ else
   fi
 fi
 if [ -z "${lnd_running##*up*}" ] ; then
-  lncli="/usr/local/bin/lncli --macaroonpath=${macaroon_path} --tlscertpath=${lnd_dir}/tls.cert"
+  lncli="lncli"
   $lncli getinfo 2>&1 | grep "Please unlock" >/dev/null
   wallet_unlocked=$?
 else
   wallet_unlocked=0
 fi
+
 printf "%0.s#" {1..40}
 echo -ne '\r### Loading LND data \r'
 
@@ -132,7 +127,7 @@ else
     lndversion="${lndpi}"
     lndversion_color="${color_green}"
   else
-    lndversion="${lndpi}"" Update!"
+    lndversion="${lndpi} to ${ln_git_version}" 
     lndversion_color="${color_red}"
   fi
 fi
