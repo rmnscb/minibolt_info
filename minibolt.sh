@@ -595,7 +595,7 @@ if [ "$btcrpcexplorer_status" = "enabled" ]; then
   if [ "$btcrpcexplorer_status" = "active" ]; then
     bserver_running="up"
     bserver_color="${color_green}"
-    btcrpcexplorerpi=v$(npm view btc-rpc-explorer version)
+    btcrpcexplorerpi=v$(sudo head -n 3 /home/btcrpcexplorer/btc-rpc-explorer/package.json | grep version | awk -F'"' '{print $4}')
     if [ "$btcrpcexplorerpi" = "$btcrpcexplorergit" ]; then
       bserver_version="$btcrpcexplorerpi"
       bserver_version_color="${color_green}"
@@ -655,8 +655,8 @@ elif [ "$thunderhub_status" = "enabled" ]; then
   lwserver_running="down"
   if [ "$thunderhub_status" = "active" ]; then
     lwserver_running="up"
-    lwserver_color="${color_green}"
-    thunderhubpi=v$(cd /home/${un_thunderhub}/thunderhub; npm version | grep -oP "thunderhub: '\K(.*)(?=-beta')")
+    lwserver_color="${color_green}"    
+    thunderhubpi=v$(sudo head -n 3 /home/thunderhub/thunderhub/package.json | grep version | awk -F'"' '{print $4}')
     if [ "$thunderhubpi" = "$thunderhubgit" ]; then
       lwserver_version="$thunderhubpi"
       lwserver_version_color="${color_green}"
@@ -689,7 +689,7 @@ ${color_blue} ╘╢╖  ${color_white}   ╝╝╝╝╝ ${color_blue}      ╖
 ${color_blue}   ╙╝╢╠╗╗╥╥╥╥╥╥╗╗╠╢╢╝╨╙                                        ${lserver_dataline_7}${color_grey}
                                   ${color_blue}%-20s${color_grey}${bserver_color}%-4s${color_grey}
 ${color_red}                                  ${bserver_version_color}%-24s${color_grey}   ${color_blue}%-20s${lwserver_color}%-4s${color_grey}
-${color_red}                                                                                           ${lwserver_version_color}%-24s${color_grey}
+${color_red}                                                             ${lwserver_version_color}%-24s${color_grey}
 
 ${color_grey}%s
 
@@ -707,4 +707,3 @@ ${color_grey}%s
 "${bserver_version}" "${lwserver_label}" "${lwserver_running}" \
 "${lwserver_version}" \
 "${ln_footer}"
- 
