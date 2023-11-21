@@ -217,7 +217,7 @@ if (( hitemp > 0 )); then
   if [ ${temp} -gt 68 ]; then
     color_temp="${color_red}\e[7m"
   elif [ ${temp} -gt 55 ]; then
-    color_temp="${color_blue}"
+    color_temp="${color_orange}"
   else
     color_temp="${color_green}"
   fi
