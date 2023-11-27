@@ -36,7 +36,7 @@ sn_thunderhub="thunderhub"
 # set colors
 color_red='\033[0;31m'
 color_green='\033[0;32m'
-color_blue='\033[0;34m'
+color_blue='\033[96m'
 color_yellow='\033[0;33m'
 color_grey='\033[0;37m'
 color_orange='\033[38;5;208m'
