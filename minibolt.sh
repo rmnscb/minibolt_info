@@ -170,12 +170,12 @@ fetch_updates() {
   updates="$((`sudo apt update &>/dev/null && sudo apt list --upgradable 2>/dev/null | wc -l`-1))"
 }
 
-# Check if we should check for new updates (limit to once every 6 hours)
+# Check if we should check for new updates
 checkupdate="0"
 if [ ! -f "$updatesstatusfile" ]; then
   checkupdate="1"
 else
-  checkupdate=$(find "${updatesstatusfile}" -mmin +360 | wc -l)
+  checkupdate=$(find "${updatesstatusfile}"  | wc -l)
 fi
 
 # Fetch or load
