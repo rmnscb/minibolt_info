@@ -782,7 +782,8 @@ fi
 # ------------------------------------------------------------------------------
 echo -ne "\033[2K"
 printf "${color_grey}cpu temp: ${color_temp}%-4s${color_grey}  tx: %-10s storage:   ${color_storage}%-11s ${color_grey}  load: %s${color_grey}
-${color_grey}up: %-10s  rx: %-10s 2nd drive: ${color_storage2nd}%-11s${color_grey}   available mem: ${color_ram}%sM${color_grey} ${color_grey}updates: ${color_updates}%-21s${color_grey}
+${color_grey}up: %-10s  rx: %-10s 2nd drive: ${color_storage2nd}%-11s${color_grey}   available mem: ${color_ram}%sM${color_grey} ${color_grey}
+updates: ${color_updates}%-21s${color_grey}
 ${color_blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${color_grey}
 ${color_blue}          ┐╓┬╓┬══╝╨╨╨╝═╗╖╓┬       ${color_orange}"₿"${color_blue}%-19s${bitcoind_color}%-4s${color_grey}   ${color_blue}%-20s${lserver_color}%-4s${color_grey}
 ${color_blue}        ─╜               ╙╠┐      ${btcversion_color}%-26s ${lserver_version_color}%-24s${color_grey}
