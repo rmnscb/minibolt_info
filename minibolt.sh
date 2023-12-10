@@ -248,7 +248,7 @@ if [ -n "${ext_storage2nd}" ]; then
     storage2nd=$(printf "%s" "$(df -h|grep ${ext_storage2nd}|awk '{print $4}')") 2>/dev/null
 else
     storage2nd_free_ratio=0
-    storage2nd="none"
+    storage2nd=""
 fi
 
 if [ -z "${storage2nd}" ]; then
