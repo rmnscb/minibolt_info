@@ -170,12 +170,12 @@ fetch_updates() {
   updates="$((`sudo apt update &>/dev/null && sudo apt list --upgradable 2>/dev/null | wc -l`-1))"
 }
 
-# Check if we should check for new updates (limit to once every 6 hours)
+# Check if we should check for new updates
 checkupdate="0"
 if [ ! -f "$updatesstatusfile" ]; then
   checkupdate="1"
 else
-  checkupdate=$(find "${updatesstatusfile}" -mmin +360 | wc -l)
+  checkupdate=$(find "${updatesstatusfile}"  | wc -l)
 fi
 
 # Fetch or load
@@ -397,7 +397,7 @@ fi
 printf "%0.s#" {1..50}
 echo -ne '\r### Loading Bitcoin Core data \r'
 
-bitcoind_running=$(systemctl is-active ${sn_bitcoin} 2>&1)
+bitcoind_running=$(sudo systemctl is-active ${sn_bitcoin} 2>&1)
 bitcoind_color="${color_green}"
 if [ -z "${bitcoind_running##*inactive*}" ]; then
   bitcoind_running="down"
@@ -539,11 +539,11 @@ lserver_dataline_5="${color_grey}"
 lserver_dataline_6="${color_grey}"
 lserver_dataline_7="${color_grey}"
 ln_footer=""
-lnd_status=$(systemctl is-enabled $sn_lnd 2>&1)
-cln_status=$(systemctl is-enabled $sn_cln 2>&1)
+lnd_status=$(sudo systemctl is-enabled $sn_lnd 2>&1)
+cln_status=$(sudo systemctl is-enabled $sn_cln 2>&1)
 if [ "$cln_status" != "enabled" ]; then # fallback from lightningd to cln for service name
   sn_cln="cln"
-  cln_status=$(systemctl is-enabled $sn_cln 2>&1)
+  cln_status=$(sudo systemctl is-enabled $sn_cln 2>&1)
 fi
 # Mock specific
 if [ "${mockmode}" -eq 1 ]; then
@@ -572,7 +572,7 @@ if [ "${mockmode}" -eq 1 ]; then
   lserver_dataline_6=$(printf "${color_grey}Channel.db size: ${color_green}%s" "${ln_channel_db_size}")
 # LND specific
 elif [ "$lnd_status" = "enabled" ]; then
-  lnd_status=$(systemctl is-active $sn_lnd 2>&1)
+  lnd_status=$(sudo systemctl is-active $sn_lnd 2>&1)
   lserver_found=1
   lserver_label="Lightning (LND)"
   lserver_running="down"
@@ -596,7 +596,7 @@ elif [ "$lnd_status" = "enabled" ]; then
   fi
 # Core Lightning specific
 elif [ "$cln_status" = "enabled" ];  then
-  cln_status=$(systemctl is-active $sn_cln 2>&1)
+  cln_status=$(sudo systemctl is-active $sn_cln 2>&1)
   lserver_found=1
   lserver_label="Lightning (CLN)"
   lserver_running="down"
@@ -635,11 +635,11 @@ eserver_running=""
 eserver_color="${color_red}\e[7m"
 eserver_version=""
 eserver_version_color="${color_red}"
-electrs_status=$(systemctl is-enabled ${sn_electrs} 2>&1)
-fulcrum_status=$(systemctl is-enabled ${sn_fulcrum} 2>&1)
+electrs_status=$(sudo systemctl is-enabled ${sn_electrs} 2>&1)
+fulcrum_status=$(sudo systemctl is-enabled ${sn_fulcrum} 2>&1)
 # Electrs specific
 if [ "$electrs_status" = "enabled" ]; then
-  electrs_status=$(systemctl is-active ${sn_electrs} 2>&1)
+  electrs_status=$(sudo systemctl is-active ${sn_electrs} 2>&1)
   eserver_found=1
   eserver_label="Electrs"
   eserver_running="down"
@@ -657,7 +657,7 @@ if [ "$electrs_status" = "enabled" ]; then
   fi
 # Fulcrum specific
 elif [ "$fulcrum_status" = "enabled" ];  then
-  fulcrum_status=$(systemctl is-active ${sn_fulcrum} 2>&1)
+  fulcrum_status=$(sudo systemctl is-active ${sn_fulcrum} 2>&1)
   eserver_found=1
   eserver_label="Fulcrum"
   eserver_running="down"
@@ -690,11 +690,11 @@ bserver_running=""
 bserver_color="${color_red}\e[7m"
 bserver_version=""
 bserver_version_color="${color_red}"
-btcrpcexplorer_status=$(systemctl is-enabled ${sn_btcrpcexplorer} 2>&1)
+btcrpcexplorer_status=$(sudo systemctl is-enabled ${sn_btcrpcexplorer} 2>&1)
 # BTC RPC Explorer specific
 if [ "$btcrpcexplorer_status" = "enabled" ]; then
-  un_btcrpcexplorer=$(systemctl show -pUser ${sn_btcrpcexplorer} | awk '{split($0,a,"="); print a[2]}')
-  btcrpcexplorer_status=$(systemctl is-active ${sn_btcrpcexplorer} 2>&1)
+  un_btcrpcexplorer=$(sudo systemctl show -pUser ${sn_btcrpcexplorer} | awk '{split($0,a,"="); print a[2]}')
+  btcrpcexplorer_status=$(sudo systemctl is-active ${sn_btcrpcexplorer} 2>&1)
   bserver_found=1
   bserver_label="Bitcoin Explorer"
   bserver_running="down"
@@ -728,16 +728,16 @@ lwserver_running=""
 lwserver_color="${color_red}\e[7m"
 lwserver_version=""
 lwserver_version_color="${color_red}"
-rtl_status=$(systemctl is-enabled ${sn_rtl} 2>&1)
+rtl_status=$(sudo systemctl is-enabled ${sn_rtl} 2>&1)
 if [ "$rtl_status" != "enabled" ]; then  # fallback from rtl to ridethelightning for service name
   sn_rtl="ridethelightning"
-  rtl_status=$(systemctl is-enabled ${sn_rtl} 2>&1)
+  rtl_status=$(sudo systemctl is-enabled ${sn_rtl} 2>&1)
 fi
-thunderhub_status=$(systemctl is-enabled ${sn_thunderhub} 2>&1)
+thunderhub_status=$(sudo systemctl is-enabled ${sn_thunderhub} 2>&1)
 # Ride the Ligthning specific
 if [ "$rtl_status" = "enabled" ]; then
-  un_rtl=$(systemctl show -pUser ${sn_rtl} | awk '{split($0,a,"="); print a[2]}')
-  rtl_status=$(systemctl is-active ${sn_rtl} 2>&1)
+  un_rtl=$(sudo systemctl show -pUser ${sn_rtl} | awk '{split($0,a,"="); print a[2]}')
+  rtl_status=$(sudo systemctl is-active ${sn_rtl} 2>&1)
   lwserver_found=1
   lwserver_label="Ride the Lightning"
   lwserver_running="down"
@@ -754,8 +754,8 @@ if [ "$rtl_status" = "enabled" ]; then
   fi
 # Thunderhub specific
 elif [ "$thunderhub_status" = "enabled" ]; then
-  un_thunderhub=$(systemctl show -pUser ${sn_thunderhub} | awk '{split($0,a,"="); print a[2]}')
-  thunderhub_status=$(systemctl is-active ${sn_thunderhub} 2>&1)
+  un_thunderhub=$(sudo systemctl show -pUser ${sn_thunderhub} | awk '{split($0,a,"="); print a[2]}')
+  thunderhub_status=$(sudo systemctl is-active ${sn_thunderhub} 2>&1)
   lwserver_found=1
   lwserver_label="Thunderhub"
   lwserver_running="down"
@@ -782,7 +782,8 @@ fi
 # ------------------------------------------------------------------------------
 echo -ne "\033[2K"
 printf "${color_grey}cpu temp: ${color_temp}%-4s${color_grey}  tx: %-10s storage:   ${color_storage}%-11s ${color_grey}  load: %s${color_grey}
-${color_grey}up: %-10s  rx: %-10s 2nd drive: ${color_storage2nd}%-11s${color_grey}   available mem: ${color_ram}%sM${color_grey} ${color_grey}updates: ${color_updates}%-21s${color_grey}
+${color_grey}up: %-10s  rx: %-10s 2nd drive: ${color_storage2nd}%-11s${color_grey}   available mem: ${color_ram}%sM${color_grey} ${color_grey}
+updates: ${color_updates}%-21s${color_grey}
 ${color_blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${color_grey}
 ${color_blue}          ┐╓┬╓┬══╝╨╨╨╝═╗╖╓┬       ${color_orange}"₿"${color_blue}%-19s${bitcoind_color}%-4s${color_grey}   ${color_blue}%-20s${lserver_color}%-4s${color_grey}
 ${color_blue}        ─╜               ╙╠┐      ${btcversion_color}%-26s ${lserver_version_color}%-24s${color_grey}
