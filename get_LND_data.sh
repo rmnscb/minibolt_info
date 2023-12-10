@@ -23,7 +23,7 @@ else
   fi
 fi
 if [ -z "${lnd_running##*up*}" ] ; then
-  lncli="sudo lncli"
+  lncli="lncli"
   $lncli getinfo 2>&1 | grep "Please unlock" >/dev/null
   wallet_unlocked=$?
 else
@@ -77,7 +77,7 @@ else
   ln_channels_online="$(echo ${lncli_getinfo} | jq -r '.num_active_channels')" 2>/dev/null
   ln_channels_total="$(echo ${lncli_listchannels} | jq '.[] | length')" 2>/dev/null
   ln_connect_addr="$(echo ${lncli_getinfo} | jq -r '.uris[0]')" 2>/dev/null
-  ln_connect_guidance="sudo lncli connect ${ln_connect_addr}"
+  ln_connect_guidance="lncli connect ${ln_connect_addr}"
   if [ -z "${ln_connect_addr##*onion*}" ]; then
     ln_external="Using TOR Address"
   else
