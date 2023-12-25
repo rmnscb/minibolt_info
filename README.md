@@ -12,4 +12,6 @@ A bash script to monitor a [MiniBolt node](https://v2.minibolt.info/home/readme)
   $ sudo chmod +x *.sh  # Install the script and make it executable
   $ sudo cp *.sh /usr/local/bin/
   ```
+## Disable admin password request (optional -caution!)
+[how to disable admin password request](https://v2.minibolt.info/bonus-guides/system/ssh-keys#disable-admin-password-request-optional-caution)
 
