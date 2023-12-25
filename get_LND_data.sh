@@ -154,7 +154,7 @@ printf "%0.s#" {1..70}
 echo -ne '\r### Determining channel db size \r'
 
 #get channel.db size
-ln_channel_db_size=$(  du -h ${lnd_dir}/data/graph/mainnet/channel.db | awk '{print $1}')
+ln_channel_db_size=$( sudo du -h ${lnd_dir}/data/graph/mainnet/channel.db | awk '{print $1}')
 
 printf "%0.s#" {1..76}
 echo -ne '\r### Saving \r'
