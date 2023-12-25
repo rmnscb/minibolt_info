@@ -331,12 +331,12 @@ fetch_githubversion_cln() {
 }
 
 
-# Check if we should update with latest versions from github (limit to once every 6 hours)
+# Check if we should update with latest versions from github
 gitupdate="0"
 if [ ! -f "$gitstatusfile" ]; then
   gitupdate="1"
 else
-  gitupdate=$(find "${gitstatusfile}" -mmin +360 | wc -l)
+  gitupdate=$(find "${gitstatusfile}"  | wc -l)
 fi
 
 # Fetch or load
