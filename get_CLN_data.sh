@@ -7,7 +7,7 @@ ln_git_version=$4
 
 echo -ne '\r### Loading CoreLN data \r'
 
-ln_running=$(sudo systemctl is-active cln 2>&1)
+ln_running=$(  systemctl is-active cln 2>&1)
 coreln_color="${color_green}"
 if [ -z "${ln_running##*inactive*}" ]; then
   ln_running="down"
@@ -27,11 +27,11 @@ echo -ne '\r### Loading CoreLN data \r'
 
 
 alias_color="${color_grey}"
-ln_alias="$( sudo ${lncli} getinfo | jq -r '.alias')" 2>/dev/null
+ln_alias="$(   ${lncli} getinfo | jq -r '.alias')" 2>/dev/null
 
 # Reduce number of calls to LND by doing once and caching
-lncli_getinfo=$( sudo ${lncli} getinfo 2>&1)
-lncli_listfunds=$( sudo ${lncli} listfunds 2>&1)
+lncli_getinfo=$(   ${lncli} getinfo 2>&1)
+lncli_listfunds=$(   ${lncli} listfunds 2>&1)
 
 ln_walletbalance=0
 #check if len(outputs) == 0 --> empty wallet
@@ -59,7 +59,7 @@ node_id=$(echo ${lncli_getinfo} | jq -r '.id') 2>/dev/null
 node_address=$(echo ${lncli_getinfo} | jq -r '.address[0].address') 2>/dev/null
 node_port=$(echo ${lncli_getinfo} | jq -r '.address[0].port') 2>/dev/null
 ln_connect_addr="$node_id"@"$node_address":"$node_port" 2>/dev/null
-ln_connect_guidance="sudo lightning-cli connect ${ln_connect_addr}"
+ln_connect_guidance="  lightning-cli connect ${ln_connect_addr}"
 if [ -z "${node_addr##*onion*}" ]; then
   ln_external="Using TOR Address"
 else
