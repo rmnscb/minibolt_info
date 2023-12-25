@@ -9,7 +9,7 @@ echo -ne '\r### Loading LND data \r'
 # set datadir
 lnd_dir="/data/lnd"
 
-lnd_running=$(sudo systemctl is-active lnd 2>&1)
+lnd_running=$(  systemctl is-active lnd 2>&1)
 lnd_color="${color_green}"
 if [ -z "${lnd_running##*inactive*}" ]; then
   lnd_running="down"
@@ -23,7 +23,7 @@ else
   fi
 fi
 if [ -z "${lnd_running##*up*}" ] ; then
-  lncli="sudo lncli"
+  lncli="lncli"
   $lncli getinfo 2>&1 | grep "Please unlock" >/dev/null
   wallet_unlocked=$?
 else
@@ -52,7 +52,7 @@ if [ "$wallet_unlocked" -eq "0" ] ; then
   if [ $lnd_running = "up" ]; then
     ln_connect_guidance="You must first unlock your wallet:   lncli unlock"
   else
-    ln_connect_guidance="The LND service is down. Start the service:   sudo systemctl start lnd"
+    ln_connect_guidance="The LND service is down. Start the service:     systemctl start lnd"
   fi
 else
   # Reduce number of calls to LND by doing once and caching
@@ -77,7 +77,7 @@ else
   ln_channels_online="$(echo ${lncli_getinfo} | jq -r '.num_active_channels')" 2>/dev/null
   ln_channels_total="$(echo ${lncli_listchannels} | jq '.[] | length')" 2>/dev/null
   ln_connect_addr="$(echo ${lncli_getinfo} | jq -r '.uris[0]')" 2>/dev/null
-  ln_connect_guidance="sudo lncli connect ${ln_connect_addr}"
+  ln_connect_guidance="lncli connect ${ln_connect_addr}"
   if [ -z "${ln_connect_addr##*onion*}" ]; then
     ln_external="Using TOR Address"
   else
@@ -154,7 +154,7 @@ printf "%0.s#" {1..70}
 echo -ne '\r### Determining channel db size \r'
 
 #get channel.db size
-ln_channel_db_size=$(sudo du -h ${lnd_dir}/data/graph/mainnet/channel.db | awk '{print $1}')
+ln_channel_db_size=$(  du -h ${lnd_dir}/data/graph/mainnet/channel.db | awk '{print $1}')
 
 printf "%0.s#" {1..76}
 echo -ne '\r### Saving \r'
