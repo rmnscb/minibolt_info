@@ -544,11 +544,11 @@ lserver_dataline_5="${color_grey}"
 lserver_dataline_6="${color_grey}"
 lserver_dataline_7="${color_grey}"
 ln_footer=""
-lnd_status=$( systemctl is-enabled $sn_lnd 2>&1)
-cln_status=$( systemctl is-enabled $sn_cln 2>&1)
-if [ "$cln_status" != "enabled" ]; then # fallback from lightningd to cln for service name
+lnd_status=$( systemctl is-active    $sn_lnd 2>&1)
+cln_status=$( systemctl is-active    $sn_cln 2>&1)
+if [ "$cln_status" != "active" ]; then # fallback from lightningd to cln for service name
   sn_cln="cln"
-  cln_status=$( systemctl is-enabled $sn_cln 2>&1)
+  cln_status=$( systemctl is-active    $sn_cln 2>&1)
 fi
 # Mock specific
 if [ "${mockmode}" -eq 1 ]; then
@@ -576,7 +576,7 @@ if [ "${mockmode}" -eq 1 ]; then
   lserver_dataline_5=$(printf "${color_grey}%s/%s channels" "${ln_channels_online}" "${ln_channels_total}")
   lserver_dataline_6=$(printf "${color_grey}Channel.db size: ${color_green}%s" "${ln_channel_db_size}")
 # LND specific
-elif [ "$lnd_status" = "enabled" ]; then
+elif [ "$lnd_status" = "active" ]; then
   lnd_status=$( systemctl is-active $sn_lnd 2>&1)
   lserver_found=1
   lserver_label="Lightning (LND)"
@@ -600,7 +600,7 @@ elif [ "$lnd_status" = "enabled" ]; then
     lserver_dataline_7=$(printf "${color_grey}Channel.db size: ${color_green}%s" "${ln_channel_db_size}")
   fi
 # Core Lightning specific
-elif [ "$cln_status" = "enabled" ];  then
+elif [ "$cln_status" = "active" ];  then
   cln_status=$( systemctl is-active $sn_cln 2>&1)
   lserver_found=1
   lserver_label="Lightning (CLN)"
@@ -640,10 +640,10 @@ eserver_running=""
 eserver_color="${color_red}\e[7m"
 eserver_version=""
 eserver_version_color="${color_red}"
-electrs_status=$( systemctl is-enabled ${sn_electrs} 2>&1)
-fulcrum_status=$( systemctl is-enabled ${sn_fulcrum} 2>&1)
+electrs_status=$( systemctl is-active    ${sn_electrs} 2>&1)
+fulcrum_status=$( systemctl is-active    ${sn_fulcrum} 2>&1)
 # Electrs specific
-if [ "$electrs_status" = "enabled" ]; then
+if [ "$electrs_status" = "active" ]; then
   electrs_status=$( systemctl is-active ${sn_electrs} 2>&1)
   eserver_found=1
   eserver_label="Electrs"
@@ -661,7 +661,7 @@ if [ "$electrs_status" = "enabled" ]; then
     fi
   fi
 # Fulcrum specific
-elif [ "$fulcrum_status" = "enabled" ];  then
+elif [ "$fulcrum_status" = "active" ];  then
   fulcrum_status=$( systemctl is-active ${sn_fulcrum} 2>&1)
   eserver_found=1
   eserver_label="Fulcrum"
@@ -695,9 +695,9 @@ bserver_running=""
 bserver_color="${color_red}\e[7m"
 bserver_version=""
 bserver_version_color="${color_red}"
-btcrpcexplorer_status=$( systemctl is-enabled ${sn_btcrpcexplorer} 2>&1)
+btcrpcexplorer_status=$( systemctl is-active    ${sn_btcrpcexplorer} 2>&1)
 # BTC RPC Explorer specific
-if [ "$btcrpcexplorer_status" = "enabled" ]; then
+if [ "$btcrpcexplorer_status" = "active" ]; then
   un_btcrpcexplorer=$( systemctl show -pUser ${sn_btcrpcexplorer} | awk '{split($0,a,"="); print a[2]}')
   btcrpcexplorer_status=$( systemctl is-active ${sn_btcrpcexplorer} 2>&1)
   bserver_found=1
@@ -733,14 +733,14 @@ lwserver_running=""
 lwserver_color="${color_red}\e[7m"
 lwserver_version=""
 lwserver_version_color="${color_red}"
-rtl_status=$( systemctl is-enabled ${sn_rtl} 2>&1)
-if [ "$rtl_status" != "enabled" ]; then  # fallback from rtl to ridethelightning for service name
+rtl_status=$( systemctl is-active    ${sn_rtl} 2>&1)
+if [ "$rtl_status" != "active" ]; then  # fallback from rtl to ridethelightning for service name
   sn_rtl="ridethelightning"
-  rtl_status=$( systemctl is-enabled ${sn_rtl} 2>&1)
+  rtl_status=$( systemctl is-active    ${sn_rtl} 2>&1)
 fi
-thunderhub_status=$( systemctl is-enabled ${sn_thunderhub} 2>&1)
+thunderhub_status=$( systemctl is-active    ${sn_thunderhub} 2>&1)
 # Ride the Ligthning specific
-if [ "$rtl_status" = "enabled" ]; then
+if [ "$rtl_status" = "active" ]; then
   un_rtl=$( systemctl show -pUser ${sn_rtl} | awk '{split($0,a,"="); print a[2]}')
   rtl_status=$( systemctl is-active ${sn_rtl} 2>&1)
   lwserver_found=1
@@ -758,7 +758,7 @@ if [ "$rtl_status" = "enabled" ]; then
     fi
   fi
 # Thunderhub specific
-elif [ "$thunderhub_status" = "enabled" ]; then
+elif [ "$thunderhub_status" = "active" ]; then
   un_thunderhub=$( systemctl show -pUser ${sn_thunderhub} | awk '{split($0,a,"="); print a[2]}')
   thunderhub_status=$( systemctl is-active ${sn_thunderhub} 2>&1)
   lwserver_found=1
