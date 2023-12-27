@@ -25,6 +25,7 @@ sn_bitcoin="bitcoind"
 sn_lnd="lnd"
 sn_cln="lightningd"                     # cln, lightningd
 sn_btcrpcexplorer="btcrpcexplorer"
+sn_mempool="mempool"
 sn_electrs="electrs"
 sn_fulcrum="fulcrum"
 sn_rtl="rtl"                            # rtl, ridethelightning
@@ -48,6 +49,7 @@ color_white='\033[37;3m'
 # git repo urls latest version 
 bitcoin_git_repo_url="https://api.github.com/repos/bitcoin/bitcoin/releases/latest" 
 electrs_git_repo_url="https://api.github.com/repos/romanz/electrs/releases/latest" 
+mempool_git_repo_url="https://api.github.com/repos/mempool/mempool/releases/latest"
 btcrpcexplorer_git_repo_url="https://api.github.com/repos/janoside/btc-rpc-explorer/releases/latest" 
 rtl_git_repo_url="https://api.github.com/repos/Ride-The-Lightning/RTL/releases/latest" 
 fulcrum_git_repo_url="https://api.github.com/repos/cculianu/Fulcrum/releases/latest" 
@@ -281,6 +283,7 @@ save_minibolt_versions() {
     "cln": "${clngit}",
     "electrs": "${electrsgit}",
     "blockexplorer": "${btcrpcexplorergit}",
+    "mempool": "${mempoolgit}",
     "rtl": "${rtlgit}",
     "fulcrum": "${fulcrumgit}",
     "thunderhub": "${thunderhubgit}"
@@ -295,6 +298,7 @@ load_minibolt_versions() {
   clngit=$(cat ${gitstatusfile} | jq -r '.githubversions.cln')
   electrsgit=$(cat ${gitstatusfile} | jq -r '.githubversions.electrs')
   btcrpcexplorergit=$(cat ${gitstatusfile} | jq -r '.githubversions.blockexplorer')
+  mempoolgit=$(cat ${gitstatusfile} | jq -r '.githubversions.mempool')  
   rtlgit=$(cat ${gitstatusfile} | jq -r '.githubversions.rtl')
   fulcrumgit=$(cat ${gitstatusfile} | jq -r '.githubversions.fulcrum')
   thunderhubgit=$(cat ${gitstatusfile} | jq -r '.githubversions.thunderhub')
@@ -313,6 +317,9 @@ fetch_githubversion_electrs() {
 }
 fetch_githubversion_btcrpcexplorer() {
   btcrpcexplorergit=$(curl -s --connect-timeout 5 ${btcrpcexplorer_git_repo_url} | jq -r '.tag_name | select(.!=null)')
+}
+fetch_githubversion_mempool() {
+  mempoolgit=$(curl -s --connect-timeout 5 ${mempool_git_repo_url} | jq -r '.tag_name | select(.!=null)')
 }
 fetch_githubversion_rtl() {
   rtlgit=$(curl -s --connect-timeout 5 ${rtl_git_repo_url} | jq -r '.tag_name | select(.!=null)')
@@ -347,6 +354,7 @@ if [ "${gitupdate}" -eq "1" ]; then
   fetch_githubversion_cln
   fetch_githubversion_electrs
   fetch_githubversion_btcrpcexplorer
+  fetch_githubversion_mempool
   fetch_githubversion_rtl
   fetch_githubversion_fulcrum
   fetch_githubversion_thunderhub
@@ -377,6 +385,10 @@ if [ -z "$electrsgit" ]; then
 fi
 if [ -z "$btcrpcexplorergit" ]; then
   fetch_githubversion_btcrpcexplorer
+  resaveminibolt="1"
+fi
+if [ -z "$mempoolgit" ]; then
+  fetch_githubversion_mempool
   resaveminibolt="1"
 fi
 if [ -z "$rtlgit" ]; then
@@ -696,6 +708,7 @@ bserver_color="${color_red}\e[7m"
 bserver_version=""
 bserver_version_color="${color_red}"
 btcrpcexplorer_status=$( systemctl is-active    ${sn_btcrpcexplorer} 2>&1)
+mempool_status=$( systemctl is-active    ${sn_mempool} 2>&1)
 # BTC RPC Explorer specific
 if [ "$btcrpcexplorer_status" = "active" ]; then
   un_btcrpcexplorer=$( systemctl show -pUser ${sn_btcrpcexplorer} | awk '{split($0,a,"="); print a[2]}')
@@ -712,6 +725,24 @@ if [ "$btcrpcexplorer_status" = "active" ]; then
       bserver_version_color="${color_green}"
     else
       bserver_version="${btcrpcexplorerpi} to ${btcrpcexplorergit}"
+    fi
+  fi
+# Mempool specific
+elif [ "$mempool_status" = "active" ]; then
+  un_mempool=$( systemctl show -pUser ${sn_mempool} | awk '{split($0,a,"="); print a[2]}')
+  mempool_status=$( systemctl is-active ${sn_mempool} 2>&1)
+  bserver_found=1
+  bserver_label="Mempool Explorer"
+  bserver_running="down"
+  if [ "$mempool_status" = "active" ]; then
+    bserver_running="up"
+    bserver_color="${color_green}"
+    mempoolpi=v$( sudo head -n 3 /home/mempool/mempool/backend/package.json | grep version | awk -F'"' '{print $4}')
+    if [ "$mempoolpi" = "$mempoolgit" ]; then
+      bserver_version="$mempoolpi"
+      bserver_version_color="${color_green}"
+    else
+      bserver_version="${mempoolpi} to ${mempoolgit}"
     fi
   fi
 # ... add any future supported blockchain explorer implementation checks here
@@ -819,5 +850,4 @@ ${color_grey}%s
 "${bserver_label}" "${bserver_running}" \
 "${bserver_version}" "${lwserver_label}" "${lwserver_running}" \
 "${lwserver_version}" \
-"${ln_footer}" 
-
+"${ln_footer}"
